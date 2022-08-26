@@ -3,7 +3,7 @@ let invalidUser = false;
 let sendInput = document.querySelector('.bottom-bar input');
 let nameInput = document.querySelector('.inputInitial');
 let checkMarkUser = 'todos';
-let checkMarkVisbility = 'visibPublic';
+let checkMarkVisibility = 'message';
 
 function displayMessages(response) {
   const container = document.querySelector(".container");
@@ -13,18 +13,18 @@ function displayMessages(response) {
   for (let i = 0; i < messages.length; i++) {
     if (messages[i].type == "message") {
       container.innerHTML += `
-        <div class="message all">
+        <div class="message-box all">
             <p>&nbsp <span class="gray">(${messages[i].time})</span>&nbsp <span class="bold">${messages[i].from}</span> para <span class="bold">${messages[i].to}</span>:&nbsp ${messages[i].text}</p>
         </div>`;
     } else if (messages[i].type == "status") {
       container.innerHTML += `
-        <div class="message status">
+        <div class="message-box status">
             <p>&nbsp <span class="gray">(${messages[i].time})</span>&nbsp <span class="bold">${messages[i].from}</span> ${messages[i].text}</p>
         </div>`;
     } else if (messages[i].to === user.name) {
       //só mostra a mensagem privada se for destinada ao usuário que está usando o chat 
       container.innerHTML += `
-        <div class="message private">
+        <div class="message-box private">
             <p>&nbsp&nbsp<span class="gray">(${messages[i].time})</span>&nbsp&nbsp<span class="bold">${messages[i].from}</span> reservadamente para <span class="bold">${messages[i].to}</span>:&nbsp ${messages[i].text}</p>
         </div>`;
     }
@@ -71,9 +71,9 @@ function sendMessage(){
     sendInput.value = '';
     const requestData = {
                             from: user.name,
-                            to: 'Todos',
+                            to: checkMarkUser,
                             text: message,
-                            type: 'message'
+                            type: checkMarkVisibility
                         };
     let request = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', requestData);
     request.then(responseSending)
@@ -131,7 +131,7 @@ function addCheckMark(elementClicked){
     }
     //console.log(itemOfList.data-identifier);
     if (listOfItens.classList.contains('visibility-class')){
-        checkMarkVisbility = elementClicked.parentElement.classList.item(1);
+        checkMarkVisibility = elementClicked.parentElement.classList.item(1);
     } else
         checkMarkUser = elementClicked.parentElement.classList.item(2);
     elementClicked.nextElementSibling.nextElementSibling.classList.remove('hidden');
