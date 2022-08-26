@@ -35,7 +35,7 @@ body {
   width: 100%;
   height: 507px;
   margin-top: 26px;
-  margin-bottom: 26px;
+  margin-bottom: 106px;
   overflow-y: scroll;
 }
 
@@ -144,8 +144,10 @@ body {
 }
 
 .contactList{
+  height: 444px;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
 }
 
 .contact-title,

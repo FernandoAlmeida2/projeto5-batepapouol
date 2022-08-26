@@ -3,7 +3,7 @@ let invalidUser = false;
 let sendInput = document.querySelector('.bottom-bar input');
 let nameInput = document.querySelector('.inputInitial');
 let checkMarkUser = 'todos';
-let checkMarkVisbility = 'public';
+let checkMarkVisbility = 'visibPublic';
 
 function displayMessages(response) {
   const container = document.querySelector(".container");
@@ -44,21 +44,16 @@ function requestData() {
   request.catch(requestError);
 }
 
-function manteve (){
-    tempoConexao += 5;
-    console.log(tempoConexao);
-}
 
-let tempoConexao = 0;
 function keepConnection(){
     let request = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', user);
     //verificar se precisa tratar o caso then
-    request.then(manteve);
     request.catch(requestError);
 }
 
 function userConnected(){
     setInterval(keepConnection,4900);
+    refreshActiveUsers();
     setInterval(refreshActiveUsers,10000);
     setInterval(requestData,3000);
 }
@@ -128,23 +123,32 @@ function toggleLateralMenu(){
 }
 
 function addCheckMark(elementClicked){
-    const father = elementClicked.parentElement;
-    const grandFather = father.parentElement;
-    const markList = grandFather.querySelectorAll('.check-mark');
-    const checkSelected = elementClicked.nextElementSibling.nextElementSibling;
+    const listOfItens = elementClicked.parentElement.parentElement;
+    const markList = listOfItens.querySelectorAll('.check-mark');
     for (let i = 0; i < markList.length; i++){
         if (markList[i].classList.contains('hidden') == false)
             markList[i].classList.add('hidden');
     }
-    if (father.data-identifier == 'visibility'){
-        checkMarkVisbility = elementClicked.classList
+    //console.log(itemOfList.data-identifier);
+    if (listOfItens.classList.contains('visibility-class')){
+        checkMarkVisbility = elementClicked.parentElement.classList.item(1);
+    } else
+        checkMarkUser = elementClicked.parentElement.classList.item(2);
+    elementClicked.nextElementSibling.nextElementSibling.classList.remove('hidden');
+}
+
+function userIsOnline(usersList){
+    for (let i = 0; i < usersList.length; i++){
+        if (usersList[i].name === checkMarkUser)
+            return true
     }
-    checkSelected.classList.remove('hidden');
+    return false;
 }
 
 function displayActiveUsers(response){
     const usersList = response.data;
     const usersMenu = document.querySelector('.contactList');
+    let userElementCheckMarked;
     usersMenu.innerHTML = `
         <div class="contact-title">
             <h1 class="bold">Escolha um contato<br>para enviar mensagem:</h1>
@@ -165,6 +169,12 @@ function displayActiveUsers(response){
             </div>
         `;
     }
+
+    if (!userIsOnline(usersList)){
+        checkMarkUser = 'todos';
+    }
+    userElementCheckMarked = document.querySelector('.' + checkMarkUser);
+    addCheckMark(userElementCheckMarked.firstElementChild);
 }
 function refreshActiveUsers(){
     let request = axios.get('https://mock-api.driven.com.br/api/v6/uol/participants');
