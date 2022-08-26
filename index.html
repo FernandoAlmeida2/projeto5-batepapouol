@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto 5 - Bate-papo UOL</title>
+    <link rel="stylesheet" href="reset.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="top-bar">
+        <img src = "./images/logo1.png"/>
+        <ion-icon name="people" onclick="toggleLateralMenu()"></ion-icon>
+    </div>
+    <div class="container">      
+    </div>
+    <div class="bottom-bar">
+        <input placeholder="Escreva aqui...">
+        <ion-icon name="paper-plane-outline" onclick="sendMessage()"></ion-icon>
+    </div>
+    <div class="activeUsers hidden">
+      <div class="shadow" onclick="toggleLateralMenu()"></div>
+      <div class="menuUsers">
+        <div class="contactList">
+        </div>
+        <div class="visibility-class">
+          <div class="visibility-title">
+            <h1 class="bold">Escolha a visibilidade:</h1>
+          </div>        
+          <div data-identifier="visibility" class="itemList visibPublic">
+            <ion-icon name="lock-open" class = 'public' onclick="addCheckMark(this)"></ion-icon>
+            <p>Público</p>
+            <span class="check-mark hidden">&#10004;</span> 
+          </div>
+          <div data-identifier="visibility" class="itemList">
+              <ion-icon name="lock-closed" class = 'privately' onclick="addCheckMark(this)"></ion-icon>
+              <p>Reservadamente</p>
+              <span class="check-mark hidden">&#10004;</span>
+          </div>
+        </div>
+          
+      </div>
+    </div>
+
+    <div class="initialLayout flexible">
+      <img src = "./images/logo2.png" class='logoInitial'/>
+      <input placeholder="Digite seu nome" class="inputInitial">
+      <button class='buttonInitial' onclick="initializeSection()">Entrar</button>
+      <img src = "./images/Loading_icon.gif" class='loadingGif hidden'/>
+      <p class="loadingText hidden">Entrando...</p>
+    </div>
+    
+    <script
+      type="module"
+      src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.esm.js"
+    ></script>
+    <script
+      nomodule=""
+      src="https://unpkg.com/ionicons@5.4.0/dist/ionicons/ionicons.js"
+    ></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>
