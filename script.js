@@ -5,6 +5,7 @@ let nameInput = document.querySelector('.inputInitial');
 let checkMarkUser = 'todos';
 let checkMarkVisibility = 'message';
 let timeLastMessage = '(00:00:00)';
+let flagForeverAlone = false;
 
 
 //Começo funções de requisição de display das mensagens do chat
@@ -27,6 +28,10 @@ function displayMessages(response) {
         </div>`;
     } else if (messages[i].to === user.name || messages[i].from === user.name) {
       //só mostra a mensagem privada se for destinada ao usuário que está usando o chat 
+      if (messages[i].to == messages[i].from && !flagForeverAlone){
+        alert ('Que isso jovem, conversando com vce mesmo... desceu até uma lágrima aqui 😢');
+        flagForeverAlone = true;
+      }
       container.innerHTML += `
         <div class="message-box private">
             <p>&nbsp&nbsp<span class="gray">(${messages[i].time})</span>&nbsp&nbsp<span class="bold">${messages[i].from}</span> reservadamente para <span class="bold">${messages[i].to}</span>:&nbsp ${messages[i].text}</p>
@@ -192,12 +197,15 @@ function userResponse(response){
 
 function initializeSection(){
     const initialInput = document.querySelector('.inputInitial');
+    user.name = initialInput.value;
+    if(user.name == ''){
+        return alert('Seja criativo, escreva algum nome ai né... 😒')
+    }
     toggleListClass('.inputInitial', 'hidden');
     toggleListClass('.buttonInitial', 'hidden');
     toggleListClass('.loadingGif', 'hidden');
     toggleListClass('.loadingText', 'hidden');
 
-    user.name = initialInput.value;
     initialInput.value = '';
     request = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants ', user);
     request.then(userResponse);
