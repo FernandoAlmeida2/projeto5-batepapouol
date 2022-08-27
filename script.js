@@ -6,6 +6,9 @@ let checkMarkUser = 'todos';
 let checkMarkVisibility = 'message';
 let timeLastMessage = '(00:00:00)';
 
+
+//Começo funções de requisição de display das mensagens do chat
+
 function displayMessages(response) {
   const container = document.querySelector(".container");
   const messages = response.data;
@@ -30,16 +33,17 @@ function displayMessages(response) {
         </div>`;
     }
   }
-  if (messages[length-1].time !== timeLastMessage){
+  if (messages[messages.length-1].time !== timeLastMessage){
     container.lastElementChild.scrollIntoView();
   }
-  timeLastMessage = messages[length-1].time;
+  timeLastMessage = messages[messages.length-1].time;
 }
 
-
+//Aqui nesse projeto não tratei os erros de requisição, só fiz uma função decorativa
 function requestError(response) {
     console.log(response);
   }
+
 
 function requestData() {
   let request = axios.get("https://mock-api.driven.com.br/api/v6/uol/messages");
@@ -47,83 +51,39 @@ function requestData() {
   request.catch(requestError);
 }
 
+// Começo aqui não precisei tratar o caso then, pois a funçao só faz uma requisição p manter o usuário online
 
 function keepConnection(){
     let request = axios.post('https://mock-api.driven.com.br/api/v6/uol/status', user);
-    //verificar se precisa tratar o caso then
     request.catch(requestError);
 }
 
-function userConnected(){
-    setInterval(keepConnection,4900);
-    refreshActiveUsers();
-    setInterval(refreshActiveUsers,10000);
-    setInterval(requestData,3000);
-}
+// Começo função que verifica se o usuário passado como parâmetro está ativo
 
-function responseSending(response){
-    if(response.status == '200'){
-        requestData();
+function userIsOnline(usersList){
+    for (let i = 0; i < usersList.length; i++){
+        if (usersList[i].name === checkMarkUser)
+            return true
     }
-    else
-        window.location.reload();
+    return false;
 }
 
-function sendMessage(){
-    const message = sendInput.value;
-    sendInput.value = '';
-    const requestData = {
-                            from: user.name,
-                            to: checkMarkUser,
-                            text: message,
-                            type: checkMarkVisibility
-                        };
-    let request = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', requestData);
-    request.then(responseSending)
-    request.catch(requestError);
-}
-
-function userResponse(response){
-    if(response.status == '400'){
-        alert('Nome de usuário já está em uso. Escolha outro nome.');
-        toggleListClass('.inputInitial', 'hidden');
-        toggleListClass('.buttonInitial', 'hidden');
-        toggleListClass('.loadingGif', 'hidden');
-        toggleListClass('.loadingText', 'hidden');
-    } else{
-        alert('Conexão estabelecida com sucesso!');
-        toggleListClass('.initialLayout', 'hidden');
-        toggleListClass('.initialLayout', 'flexible');
-        toggleListClass('.loadingGif', 'hidden');
-        toggleListClass('.loadingText', 'hidden');
-        userConnected();
-    }
-}
-
-function initializeSection(){
-    const initialInput = document.querySelector('.inputInitial');
-    toggleListClass('.inputInitial', 'hidden');
-    toggleListClass('.buttonInitial', 'hidden');
-    toggleListClass('.loadingGif', 'hidden');
-    toggleListClass('.loadingText', 'hidden');
-
-    user.name = initialInput.value;
-    initialInput.value = '';
-    request = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants ', user);
-    request.then(userResponse);
-    request.catch(requestError);
-}
+// Começo função que esconde/mostram alguma div
 
 function toggleListClass(classTarget, classToggle){
     const menu = document.querySelector(classTarget);
     menu.classList.toggle(classToggle);
 }
 
+// Começo função que esconde/mostra o menu lateral de usuários ativos/privacidade
+
 function toggleLateralMenu(){
     const menu = document.querySelector('.activeUsers');
     menu.classList.toggle('hidden');
     menu.classList.toggle('flexible');
 }
+
+//Começo função que adiciona as checkmarks no usuário escolhido e na config de privacidade
 
 function addCheckMark(elementClicked){
     const listOfItens = elementClicked.parentElement;
@@ -140,13 +100,7 @@ function addCheckMark(elementClicked){
     elementClicked.lastElementChild.classList.remove('hidden');
 }
 
-function userIsOnline(usersList){
-    for (let i = 0; i < usersList.length; i++){
-        if (usersList[i].name === checkMarkUser)
-            return true
-    }
-    return false;
-}
+//Começo funções do menu lateral onde mostra os usuários ativos e atualiza a cada 10 seg
 
 function displayActiveUsers(response){
     const usersList = response.data;
@@ -179,11 +133,79 @@ function displayActiveUsers(response){
     userElementCheckMarked = document.querySelector('.' + checkMarkUser);
     addCheckMark(userElementCheckMarked);
 }
+
 function refreshActiveUsers(){
     let request = axios.get('https://mock-api.driven.com.br/api/v6/uol/participants');
     request.then(displayActiveUsers);
     request.catch(requestError);
 }
+
+function userConnected(){
+    setInterval(keepConnection,4900);
+    refreshActiveUsers();
+    setInterval(refreshActiveUsers,10000);
+    setInterval(requestData,3000);
+}
+
+// Começo Funções de envio de mensagem
+
+function responseSending(response){
+    if(response.status == '200'){
+        requestData();
+    }
+    else
+        window.location.reload();
+}
+
+function sendMessage(){
+    const message = sendInput.value;
+    sendInput.value = '';
+    const requestData = {
+                            from: user.name,
+                            to: checkMarkUser,
+                            text: message,
+                            type: checkMarkVisibility
+                        };
+    let request = axios.post('https://mock-api.driven.com.br/api/v6/uol/messages', requestData);
+    request.then(responseSending)
+    request.catch(requestError);
+}
+
+//Começo funções de inicialização via clique no input do layout inicial
+
+function userResponse(response){
+    if(response.status == '400'){
+        alert('Nome de usuário já está em uso. Escolha outro nome.');
+        toggleListClass('.inputInitial', 'hidden');
+        toggleListClass('.buttonInitial', 'hidden');
+        toggleListClass('.loadingGif', 'hidden');
+        toggleListClass('.loadingText', 'hidden');
+    } else{
+        alert('Conexão estabelecida com sucesso!');
+        toggleListClass('.initialLayout', 'hidden');
+        toggleListClass('.initialLayout', 'flexible');
+        toggleListClass('.loadingGif', 'hidden');
+        toggleListClass('.loadingText', 'hidden');
+        userConnected();
+    }
+}
+
+function initializeSection(){
+    const initialInput = document.querySelector('.inputInitial');
+    toggleListClass('.inputInitial', 'hidden');
+    toggleListClass('.buttonInitial', 'hidden');
+    toggleListClass('.loadingGif', 'hidden');
+    toggleListClass('.loadingText', 'hidden');
+
+    user.name = initialInput.value;
+    initialInput.value = '';
+    request = axios.post('https://mock-api.driven.com.br/api/v6/uol/participants ', user);
+    request.then(userResponse);
+    request.catch(requestError);
+}
+
+
+//Faz com que os inputs sejam acionados com "enter"
 
 sendInput.addEventListener("keypress",function(event) {
     if (event.key === 'Enter') {
