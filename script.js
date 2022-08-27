@@ -4,6 +4,7 @@ let sendInput = document.querySelector('.bottom-bar input');
 let nameInput = document.querySelector('.inputInitial');
 let checkMarkUser = 'todos';
 let checkMarkVisibility = 'message';
+let timeLastMessage = '(00:00:00)';
 
 function displayMessages(response) {
   const container = document.querySelector(".container");
@@ -21,7 +22,7 @@ function displayMessages(response) {
         <div class="message-box status">
             <p>&nbsp <span class="gray">(${messages[i].time})</span>&nbsp <span class="bold">${messages[i].from}</span> ${messages[i].text}</p>
         </div>`;
-    } else if (messages[i].to === user.name) {
+    } else if (messages[i].to === user.name || messages[i].from === user.name) {
       //só mostra a mensagem privada se for destinada ao usuário que está usando o chat 
       container.innerHTML += `
         <div class="message-box private">
@@ -29,8 +30,10 @@ function displayMessages(response) {
         </div>`;
     }
   }
-
-  container.lastElementChild.scrollIntoView();
+  if (messages[length-1].time !== timeLastMessage){
+    container.lastElementChild.scrollIntoView();
+  }
+  timeLastMessage = messages[length-1].time;
 }
 
 
@@ -123,7 +126,7 @@ function toggleLateralMenu(){
 }
 
 function addCheckMark(elementClicked){
-    const listOfItens = elementClicked.parentElement.parentElement;
+    const listOfItens = elementClicked.parentElement;
     const markList = listOfItens.querySelectorAll('.check-mark');
     for (let i = 0; i < markList.length; i++){
         if (markList[i].classList.contains('hidden') == false)
@@ -131,10 +134,10 @@ function addCheckMark(elementClicked){
     }
     //console.log(itemOfList.data-identifier);
     if (listOfItens.classList.contains('visibility-class')){
-        checkMarkVisibility = elementClicked.parentElement.classList.item(1);
+        checkMarkVisibility = elementClicked.classList.item(1);
     } else
-        checkMarkUser = elementClicked.parentElement.classList.item(2);
-    elementClicked.nextElementSibling.nextElementSibling.classList.remove('hidden');
+        checkMarkUser = elementClicked.classList.item(2);
+    elementClicked.lastElementChild.classList.remove('hidden');
 }
 
 function userIsOnline(usersList){
@@ -153,8 +156,8 @@ function displayActiveUsers(response){
         <div class="contact-title">
             <h1 class="bold">Escolha um contato<br>para enviar mensagem:</h1>
         </div>
-        <div class="itemList contact todos">
-            <ion-icon name="people" onclick="addCheckMark(this)"></ion-icon>
+        <div class="itemList contact todos" onclick="addCheckMark(this)">
+            <ion-icon name="people"></ion-icon>
             <p>Todos</p>
             <span class="check-mark hidden">&#10004;</span>
         </div>
@@ -162,8 +165,8 @@ function displayActiveUsers(response){
 
     for(let i = 0; i < usersList.length; i++){
         usersMenu.innerHTML += `
-            <div data-identifier="participant" class="itemList contact ${usersList[i].name}">
-                <ion-icon name="person-circle"  onclick="addCheckMark(this)"></ion-icon>
+            <div data-identifier="participant" class="itemList contact ${usersList[i].name}" onclick="addCheckMark(this)">
+                <ion-icon name="person-circle"></ion-icon>
                 <p>${usersList[i].name}</p>
                 <span class="check-mark hidden">&#10004;</span>
             </div>
@@ -174,7 +177,7 @@ function displayActiveUsers(response){
         checkMarkUser = 'todos';
     }
     userElementCheckMarked = document.querySelector('.' + checkMarkUser);
-    addCheckMark(userElementCheckMarked.firstElementChild);
+    addCheckMark(userElementCheckMarked);
 }
 function refreshActiveUsers(){
     let request = axios.get('https://mock-api.driven.com.br/api/v6/uol/participants');

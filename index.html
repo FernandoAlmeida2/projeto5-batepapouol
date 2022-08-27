@@ -9,40 +9,42 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
+  <div>
     <div class="top-bar">
-        <img src = "./images/logo1.png"/>
-        <ion-icon name="people" onclick="toggleLateralMenu()"></ion-icon>
-    </div>
-    <div class="container">      
-    </div>
-    <div class="bottom-bar">
-        <input placeholder="Escreva aqui...">
-        <ion-icon name="paper-plane-outline" onclick="sendMessage()"></ion-icon>
-    </div>
-    <div class="activeUsers hidden">
-      <div class="shadow" onclick="toggleLateralMenu()"></div>
-      <div class="menuUsers">
-        <div class="contactList">
-        </div>
-        <div class="visibility-class">
-          <div class="visibility-title">
-            <h1 class="bold">Escolha a visibilidade:</h1>
-          </div>        
-          <div data-identifier="visibility" class="itemList message">
-            <ion-icon name="lock-open" onclick="addCheckMark(this)"></ion-icon>
-            <p>Público</p>
-            <span class="check-mark">&#10004;</span> 
-          </div>
-          <div data-identifier="visibility" class="itemList private_message">
-              <ion-icon name="lock-closed" onclick="addCheckMark(this)"></ion-icon>
-              <p>Reservadamente</p>
-              <span class="check-mark hidden">&#10004;</span>
-          </div>
-        </div>
-          
+      <img src = "./images/logo1.png"/>
+      <ion-icon name="people" onclick="toggleLateralMenu()"></ion-icon>
+  </div>
+  <div class="container">      
+  </div>
+  <div class="bottom-bar">
+      <input placeholder="Escreva aqui...">
+      <ion-icon name="paper-plane-outline" onclick="sendMessage()"></ion-icon>
+  </div>
+  <div class="activeUsers hidden">
+    <div class="shadow" onclick="toggleLateralMenu()"></div>
+    <div class="menuUsers">
+      <div class="contactList">
       </div>
+      <div class="visibility-class">
+        <div class="visibility-title">
+          <h1 class="bold">Escolha a visibilidade:</h1>
+        </div>        
+        <div data-identifier="visibility" class="itemList message" onclick="addCheckMark(this)">
+          <ion-icon name="lock-open"></ion-icon>
+          <p>Público</p>
+          <span class="check-mark">&#10004;</span> 
+        </div>
+        <div data-identifier="visibility" class="itemList private_message" onclick="addCheckMark(this)">
+            <ion-icon name="lock-closed"></ion-icon>
+            <p>Reservadamente</p>
+            <span class="check-mark hidden">&#10004;</span>
+        </div>
+      </div>
+        
     </div>
+  </div>
+  </div>  
+    
 
     <div class="initialLayout flexible">
       <img src = "./images/logo2.png" class='logoInitial'/>
